@@ -1,6 +1,7 @@
 import js from '@eslint/js';
 import globals from 'globals';
 import prettierConfig from 'eslint-config-prettier/flat';
+import tailwindcss from 'eslint-plugin-better-tailwindcss';
 import importPlugin from 'eslint-plugin-import';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
@@ -49,6 +50,17 @@ export default defineConfig([
       'unicorn/prefer-at': ['error', { checkAllIndexAccess: true }],
       'unicorn/prefer-top-level-await': 'off',
       'unicorn/prevent-abbreviations': 'off',
+    },
+  },
+  {
+    extends: [tailwindcss.configs.recommended],
+    settings: {
+      'better-tailwindcss': {
+        entryPoint: 'src/index.css',
+      },
+    },
+    rules: {
+      'better-tailwindcss/enforce-consistent-line-wrapping': 'off',
     },
   },
   prettierConfig,
