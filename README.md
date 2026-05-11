@@ -1,73 +1,35 @@
-# React + TypeScript + Vite
+# README.md
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 디렉토리 구조
 
-Currently, two official plugins are available:
+디렉토리 구조는 **Feature-Sliced Design (FSD)**를 기반으로 하며, 슬라이스와 세그먼트는 아래 구조로 확정합니다.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
 ```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+- src/
+    - app/
+        - App.tsx
+        - main.tsx
+        - styles.css
+    - pages/                     # 페이지 컴포넌트
+        - {SLICE}/                   # 페이지/라우팅 단위 슬라이스 (예: home, weather)
+            - index.tsx
+            - {COMPONENT}.tsx
+    - widgets/                   # 독립적으로 동작하는 UI 컴포넌트
+        - {SLICE}/                   # 컴포넌트 단위 슬라이스 (예: weather-board)
+            - index.tsx
+            - {COMPONENT}.tsx
+    - features/                  # 제품 기능을 구현하는 재사용 가능한 로직
+        - {SLICE}/                   # 도메인/기능 단위 슬라이스 (예: weather)
+            - config/                # 상수 선언
+            - lib/                   # 비즈니스 로직 (예: 데이터 계산/가공 함수, 유효성 검사 정책)
+            - model/                 # 타입/스키마
+            - ui/                    # 도메인 맥락을 이해하지만 외부 데이터에는 직접 의존하지 않는 컴포넌트
+    - entities/                  # 외부 데이터
+        - {SLICE}/                   # 도메인/리소스 단위 슬라이스 (예: weather)
+            - api/                   # API 함수/쿼리
+            - model/                 # API 타입/스키마
+    - shared/                    # 공통 - 슬라이스 없음
+        - api/                       # API 클라이언트/인스턴스 및 클래스/타입
+        - lib/                       # 유틸리티 함수 및 React Hooks
+        - ui/                        # 외부 데이터에 직접 의존하지 않는 컴포넌트 (예: 디자인 시스템)
 ```
