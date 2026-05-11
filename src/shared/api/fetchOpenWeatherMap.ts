@@ -1,24 +1,16 @@
 import { getUnknownErrorMessage, ResponseError } from '../lib/error';
 
-const OPEN_WEATHER_MAP_API_BASE_URL = 'https://api.openweathermap.org';
-const OPEN_WEATHER_MAP_API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
-
-const getOpenWeatherMapApiKey = () => {
-  if (!OPEN_WEATHER_MAP_API_KEY) {
-    throw new Error('VITE_OPENWEATHER_API_KEY is not configured.');
-  }
-
-  return OPEN_WEATHER_MAP_API_KEY;
-};
+// Proxy of https://api.openweathermap.org
+const OPEN_WEATHER_MAP_API_BASE_URL = new URL('/openweathermap', globalThis.location.origin).toString();
 
 export const fetchOpenWeatherMap = async <ResponseJSON>(
   pathname: string,
   parameters: Partial<Record<string, string>>,
 ) => {
-  const url = new URL(pathname, OPEN_WEATHER_MAP_API_BASE_URL);
+  const url = new URL(OPEN_WEATHER_MAP_API_BASE_URL + pathname);
 
-  for (const [key, value] of Object.entries({ ...parameters, appid: getOpenWeatherMapApiKey() })) {
-    url.searchParams.set(key, value);
+  for (const [key, value] of Object.entries(parameters)) {
+    if (value) url.searchParams.set(key, value);
   }
 
   const response = await fetch(url);

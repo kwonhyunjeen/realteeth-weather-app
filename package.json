@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "lefthook install --reset-hooks-path",
     "dev": "run-p dev:vite dev:tsc",
-    "dev:vite": "vite",
+    "dev:vite": "vercel dev",
     "dev:tsc": "tsc -b tsconfig.app.json tsconfig.node.json --watch --preserveWatchOutput",
     "build": "tsc -b tsconfig.app.json tsconfig.node.json && vite build",
     "typecheck": "tsc -b",
@@ -49,6 +49,7 @@
     "npm-run-all2": "^8.0.4",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.58.2",
+    "vercel": "^53.3.2",
     "vite": "^8.0.10",
     "vitest": "^4.1.5"
   }
