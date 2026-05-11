@@ -9,3 +9,5 @@ pre-push:
   jobs:
     - name: lint
       run: pnpm lint
+    - name: test
+      run: pnpm test
