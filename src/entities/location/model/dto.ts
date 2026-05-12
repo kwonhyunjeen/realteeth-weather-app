@@ -8,6 +8,7 @@ type GeocodingResponseItem = {
   country: string;
   state?: string;
 };
+
 export type ForwardGeocodeRequest = { query: string };
 export type ForwardGeocodeResponseItem = GeocodingResponseItem;
 
