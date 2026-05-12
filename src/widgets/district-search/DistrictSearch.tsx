@@ -1,23 +1,16 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
-import { KOREA_DISTRICTS, type KoreaDistrict, searchKoreaDistricts } from '@/entities/location';
+import { type KoreaDistrict, searchKoreaDistricts } from '@/entities/location';
 
 export type DistrictSearchProps = {
-  value?: KoreaDistrict['id'];
   onSelect: (value: KoreaDistrict['id']) => void;
 };
 
 const MAX_RESULT_COUNT = 20;
 
-export const DistrictSearch = ({ value, onSelect }: DistrictSearchProps) => {
+export const DistrictSearch = ({ onSelect }: DistrictSearchProps) => {
   const [query, setQuery] = useState('');
   const districts = useMemo(() => searchKoreaDistricts(query).slice(0, MAX_RESULT_COUNT), [query]);
-  const selectedDistrict = useMemo(() => KOREA_DISTRICTS.find((district) => district.id === value), [value]);
-
-  // TODO: 삭제
-  useEffect(() => {
-    console.log(selectedDistrict);
-  }, [selectedDistrict]);
 
   return (
     <section className="flex h-full flex-col p-4">

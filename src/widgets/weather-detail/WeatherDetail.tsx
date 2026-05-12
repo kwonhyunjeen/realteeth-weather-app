@@ -15,7 +15,7 @@ export const WeatherDetail = ({ coordinates, fallbackLocationName }: WeatherDeta
   const componentId = useId();
 
   const coordinatesQuery = useQuery({
-    queryKey: [componentId, 'coordinates'],
+    queryKey: [componentId, 'coordinates', coordinates],
     queryFn: async () => (typeof coordinates === 'function' ? await coordinates() : coordinates),
   });
 
