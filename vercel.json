@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/kakao/:path*",
+      "destination": "/api/kakao/:path*"
+    },
+    {
       "source": "/openweathermap/:path*",
       "destination": "/api/openweathermap/:path*"
     }

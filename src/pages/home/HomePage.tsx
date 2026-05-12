@@ -16,7 +16,7 @@ export const HomePage = () => {
   const coordinates = (() => {
     if (!selectedDistrict) return getCurrentGeolocation;
     return async () => {
-      const geocode = await forwardGeocode({ query: selectedDistrict.name });
+      const geocode = await forwardGeocode({ query: selectedDistrict.fullName });
       // TODO: 인접 지역으로 추출
       const location = geocode.at(0);
       if (!location) throw new Error('지역 위치를 찾을 수 없습니다.');
