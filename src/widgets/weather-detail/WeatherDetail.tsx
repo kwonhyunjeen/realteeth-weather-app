@@ -9,9 +9,16 @@ import { getUnknownErrorMessage } from '@/shared/lib/error';
 export type WeatherDetailProps = {
   coordinates: LocationCoordinates | (() => Promise<LocationCoordinates>);
   fallbackLocationName: string;
+  canBookmark?: boolean;
+  onBookmarkAdd?: (coordinates: LocationCoordinates) => void;
 };
 
-export const WeatherDetail = ({ coordinates, fallbackLocationName }: WeatherDetailProps) => {
+export const WeatherDetail = ({
+  coordinates,
+  fallbackLocationName,
+  canBookmark = false,
+  onBookmarkAdd,
+}: WeatherDetailProps) => {
   const componentId = useId();
 
   const coordinatesQuery = useQuery({
@@ -63,6 +70,16 @@ export const WeatherDetail = ({ coordinates, fallbackLocationName }: WeatherDeta
           </div>
         )}
       </div>
+      {onBookmarkAdd && coordinatesQuery.data && (
+        <button
+          type="button"
+          aria-disabled={!canBookmark}
+          onClick={() => onBookmarkAdd(coordinatesQuery.data)}
+          className="mt-4 w-fit rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white aria-disabled:bg-slate-300 aria-disabled:text-slate-500"
+        >
+          즐겨찾기 추가
+        </button>
+      )}
     </section>
   );
 };
