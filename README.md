@@ -155,7 +155,7 @@ api/
 - `src/widgets/district-search`: 지역 검색 UI
 - `src/widgets/district-weather-card`: 현재 위치/즐겨찾기 날씨 카드 UI
 - `src/widgets/weather-detail`: 선택한 위치의 상세 날씨 UI
-- `src/widgets/weather-layout`: 데스크탑/모바일 레이아웃
+- `src/pages/home`: 메인 페이지, 현재 위치 조회 및 즐겨찾기 상태 관리, UI 렌더링
 
 ## 제출 정보
 
