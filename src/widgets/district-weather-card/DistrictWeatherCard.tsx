@@ -40,6 +40,7 @@ export const DistrictWeatherCard = ({
   });
 
   const locationName = locationQuery.data?.at(0)?.local_names?.ko ?? locationQuery.data?.at(0)?.name;
+  const today = weatherQuery.data?.daily.at(0);
 
   const [isEditingAlias, setIsEditingAlias] = useState(false);
   const [aliasInput, setAliasInput] = useState(alias ?? '');
@@ -83,9 +84,16 @@ export const DistrictWeatherCard = ({
         <span className="block text-xs text-slate-500">{locationName}</span>
         {coordinatesQuery.isPending && <span className="mt-2 block text-xs text-slate-500">날씨 확인 중</span>}
         {weatherQuery.data && (
-          <span className="mt-2 block text-lg font-semibold text-slate-900">
-            {formatTemperature(weatherQuery.data.current.temp)}
-          </span>
+          <>
+            <span className="mt-2 block text-lg font-semibold text-slate-900">
+              {formatTemperature(weatherQuery.data.current.temp)}
+            </span>
+            {today && (
+              <span className="mt-1 block text-xs text-slate-500">
+                최고 {formatTemperature(today.temp.max)} / 최저 {formatTemperature(today.temp.min)}
+              </span>
+            )}
+          </>
         )}
       </button>
 

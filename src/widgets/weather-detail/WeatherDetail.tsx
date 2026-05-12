@@ -39,6 +39,7 @@ export const WeatherDetail = ({
   const locationName =
     locationQuery.data?.at(0)?.local_names?.ko ?? locationQuery.data?.at(0)?.name ?? fallbackLocationName;
   const today = weatherQuery.data?.daily.at(0);
+  const hourlyWeather = weatherQuery.data?.hourly.slice(0, 12) ?? [];
   const description = weatherQuery.data?.current.weather.at(0)?.description;
   const coordinatesErrorMessage = getUnknownErrorMessage(coordinatesQuery.error) ?? '위치 정보를 불러오지 못했습니다.';
 
@@ -70,6 +71,23 @@ export const WeatherDetail = ({
           </div>
         )}
       </div>
+
+      {hourlyWeather.length > 0 && (
+        <div className="mt-6 border-t border-slate-200 pt-4">
+          <h2 className="text-sm font-medium text-slate-700">시간대별 기온</h2>
+          <ul className="mt-3 flex gap-3 overflow-x-auto pb-1">
+            {hourlyWeather.map((weather) => (
+              <li key={weather.dt} className="min-w-16 rounded-xl bg-slate-50 px-3 py-2 text-center">
+                <time className="text-xs text-slate-500">
+                  {new Date(weather.dt * 1000).toLocaleTimeString('ko-KR', { hour: 'numeric' })}
+                </time>
+                <p className="mt-1 text-sm font-medium text-slate-900">{formatTemperature(weather.temp)}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {onBookmarkAdd && coordinatesQuery.data && (
         <button
           type="button"
