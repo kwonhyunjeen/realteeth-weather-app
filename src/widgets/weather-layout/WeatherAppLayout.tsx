@@ -10,25 +10,31 @@ export type WeatherAppLayoutSidebarProps = {
 
 export type WeatherAppLayoutContentProps = {
   children?: ReactNode;
+  rainy?: boolean;
 };
 
 function WeatherAppLayoutRoot({ children }: WeatherAppLayoutRootProps) {
   return (
-    <div className="min-h-dvh bg-slate-50 text-slate-950">
-      <div className="flex min-h-dvh">{children}</div>
+    <div className="flex min-h-screen overflow-hidden bg-slate-950 font-sans text-white select-none md:select-auto">
+      {children}
     </div>
   );
 }
 
 function WeatherAppLayoutSidebar({ children }: WeatherAppLayoutSidebarProps) {
-  return <div className="hidden w-80 shrink-0 border-r border-slate-200 bg-white md:block">{children}</div>;
+  return (
+    <aside className="z-30 hidden h-screen w-[350px] flex-col border-r border-white/5 bg-gray-800/40 backdrop-blur-3xl md:flex lg:w-[400px]">
+      {children}
+    </aside>
+  );
 }
 
-function WeatherAppLayoutContent({ children }: WeatherAppLayoutContentProps) {
+function WeatherAppLayoutContent({ children, rainy = false }: WeatherAppLayoutContentProps) {
   return (
-    <main className="flex min-w-0 flex-1 flex-col overflow-y-auto p-4 pb-24 md:p-6">
-      <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col">{children}</div>
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 h-20 border-t border-slate-200 bg-white md:hidden" />
+    <main
+      className={`relative h-screen flex-1 overflow-y-auto transition-colors duration-700 ${rainy ? 'bg-slate-800' : 'bg-blue-500'}`}
+    >
+      {children}
     </main>
   );
 }

@@ -1,5 +1,19 @@
 @import 'tailwindcss';
 
+@theme {
+  --height-lh: 1lh;
+  --min-height-lh: 1lh;
+  --max-height-lh: 1lh;
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 body {
   margin: 0;
   min-width: 320px;
