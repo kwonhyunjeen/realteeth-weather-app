@@ -1,5 +1,6 @@
 export { forwardGeocode, reverseGeocode } from './api/geocoding';
 export { forwardGeocodeQueryOptions, reverseGeocodeQueryOptions } from './api/queries';
+export { normalizeDistrictName } from './lib/normalizeDistrictName';
 export { searchKoreaDistricts } from './lib/searchKoreaDistricts';
 export type {
   ForwardGeocodeRequest,

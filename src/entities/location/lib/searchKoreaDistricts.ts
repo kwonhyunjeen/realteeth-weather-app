@@ -1,13 +1,8 @@
 import { KOREA_DISTRICTS } from '../model/koreaDistricts';
-
-const normalizeQuery = (value: string) =>
-  value
-    .trim()
-    .replaceAll(/[\s_]+/g, '')
-    .toLowerCase();
+import { normalizeDistrictName } from './normalizeDistrictName';
 
 export const searchKoreaDistricts = (query: string) => {
-  const normalizedQuery = normalizeQuery(query);
+  const normalizedQuery = normalizeDistrictName(query);
   if (!normalizedQuery) return [];
-  return KOREA_DISTRICTS.filter((district) => normalizeQuery(district.fullName).includes(normalizedQuery));
+  return KOREA_DISTRICTS.filter((district) => district.normalizedFullName.includes(normalizedQuery));
 };
