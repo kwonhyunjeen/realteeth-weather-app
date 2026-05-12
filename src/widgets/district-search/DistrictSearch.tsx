@@ -1,7 +1,9 @@
-import { ChevronRight, MapPin, Search, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { type ReactNode, useMemo, useState } from 'react';
 
 import { type KoreaDistrict, searchKoreaDistricts } from '@/entities/location';
+
+import { DistrictSearchResults } from './DistrictSearchResults';
 
 export type DistrictSearchProps = {
   children: ReactNode;
@@ -52,30 +54,7 @@ export const DistrictSearch = ({ children, editing, onEditingChange, onSelect }:
       </div>
 
       <div className="-m-6 min-h-0 flex-1 scrollbar-none overflow-y-auto p-6 pb-10">
-        {showsSearchResults ? (
-          <div className="space-y-1">
-            {districts.length === 0 && (
-              <p className="py-10 text-center text-sm text-slate-500">검색 결과가 없습니다.</p>
-            )}
-            {districts.map((district) => (
-              <button
-                key={district.id}
-                type="button"
-                onClick={() => selectDistrict(district.id)}
-                className="flex w-full items-center gap-3 rounded-xl p-3 text-left transition-colors hover:bg-white/10 focus:bg-white/10 focus:outline-none"
-              >
-                <MapPin size={18} className="shrink-0 text-slate-500" />
-                <span className="min-w-0">
-                  <span className="block text-sm font-medium text-white">{district.name}</span>
-                  <span className="mt-0.5 block truncate text-xs text-slate-500">{district.fullName}</span>
-                </span>
-                <ChevronRight size={16} className="ml-auto shrink-0 text-slate-600" />
-              </button>
-            ))}
-          </div>
-        ) : (
-          children
-        )}
+        {showsSearchResults ? <DistrictSearchResults districts={districts} onSelect={selectDistrict} /> : children}
       </div>
     </section>
   );

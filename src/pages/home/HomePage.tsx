@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, List, MapPin, Search } from 'lucide-react';
+import { ChevronLeft, ChevronRight, List, Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 import {
@@ -11,8 +11,8 @@ import {
 import { MAX_FAVORITE_COUNT } from '@/features/bookmark';
 import { getCurrentGeolocation } from '@/features/location';
 import { safeLocalStorage } from '@/shared/lib/storage';
-import { DistrictSearch } from '@/widgets/district-search';
-import { DistrictWeatherCard } from '@/widgets/district-weather-card/DistrictWeatherCard';
+import { DistrictSearch, DistrictSearchResults } from '@/widgets/district-search';
+import { DistrictWeatherCardList } from '@/widgets/district-weather-card';
 import { WeatherDetail } from '@/widgets/weather-detail';
 import { WeatherAppLayout } from '@/widgets/weather-layout';
 
@@ -150,32 +150,15 @@ export const HomePage = () => {
     <WeatherAppLayout>
       <WeatherAppLayout.Sidebar>
         <DistrictSearch editing={isEditingBookmarks} onEditingChange={setIsEditingBookmarks} onSelect={selectDistrict}>
-          <ul className="space-y-3">
-            <li>
-              <DistrictWeatherCard
-                districtId="CURRENT"
-                coordinates={getCurrentGeolocation}
-                alias="현재 위치"
-                active={selectedLocation.type === 'current'}
-                current
-                onSelect={selectCurrentLocation}
-              />
-            </li>
-            {bookmarkDistricts.map(({ bookmark, district }) => (
-              <li key={district.id}>
-                <DistrictWeatherCard
-                  districtId={district.id}
-                  coordinates={bookmark.coordinates}
-                  alias={bookmark.alias}
-                  active={selectedLocation.type === 'district' && selectedLocation.districtId === district.id}
-                  editing={isEditingBookmarks}
-                  onSelect={selectDistrict}
-                  onAliasChange={changeBookmarkAlias}
-                  onRemove={removeBookmark}
-                />
-              </li>
-            ))}
-          </ul>
+          <DistrictWeatherCardList
+            bookmarks={bookmarkDistricts}
+            editing={isEditingBookmarks}
+            activeDistrictId={selectedLocation.type === 'district' ? selectedLocation.districtId : undefined}
+            onCurrentSelect={selectCurrentLocation}
+            onDistrictSelect={selectDistrict}
+            onAliasChange={changeBookmarkAlias}
+            onRemove={removeBookmark}
+          />
           {isEditingBookmarks && (
             <p className="p-4 text-center text-sm text-white/70">즐겨찾기는 최대 6개까지 추가할 수 있습니다.</p>
           )}
@@ -239,32 +222,11 @@ export const HomePage = () => {
           <div className="flex h-full flex-col p-6 pb-8">
             <div className="-m-4 mt-4 flex-1 scrollbar-none overflow-y-auto p-4">
               {showsMobileSearchResults ? (
-                <div>
-                  {mobileSearchResults.length > 0 ? (
-                    mobileSearchResults.map((district) => (
-                      <button
-                        key={district.id}
-                        type="button"
-                        onClick={() => selectMobileDistrict(district.id)}
-                        className="flex w-full items-center justify-between rounded-2xl border-b border-white/5 px-5 py-4 text-left transition-colors last:border-none hover:bg-white/10"
-                      >
-                        <span className="flex min-w-0 items-center gap-4">
-                          <MapPin size={20} className="shrink-0 text-slate-500" />
-                          <span className="min-w-0">
-                            <span className="block font-bold">{district.name}</span>
-                            <span className="block truncate text-xs text-slate-500">{district.fullName}</span>
-                          </span>
-                        </span>
-                        <ChevronRight size={18} className="shrink-0 text-slate-600" />
-                      </button>
-                    ))
-                  ) : (
-                    <div className="py-20 text-center text-slate-500">
-                      <p className="mb-1 text-lg font-medium">검색 결과가 없습니다.</p>
-                      <p className="text-sm">정확한 시, 군, 구 명칭을 입력해주세요.</p>
-                    </div>
-                  )}
-                </div>
+                <DistrictSearchResults
+                  districts={mobileSearchResults}
+                  variant="mobile"
+                  onSelect={selectMobileDistrict}
+                />
               ) : (
                 <div className="space-y-6">
                   <div className="flex items-center justify-between px-2">
@@ -277,36 +239,16 @@ export const HomePage = () => {
                       {isEditingBookmarks ? '완료' : '편집'}
                     </button>
                   </div>
-                  <ul className="grid gap-3">
-                    <li>
-                      <DistrictWeatherCard
-                        districtId="CURRENT"
-                        coordinates={getCurrentGeolocation}
-                        alias="현재 위치"
-                        current
-                        onSelect={() => {
-                          selectCurrentLocation();
-                          setIsMobileSearchOpen(false);
-                        }}
-                      />
-                    </li>
-                    {bookmarkDistricts.map(({ bookmark, district }) => (
-                      <li key={district.id}>
-                        <DistrictWeatherCard
-                          districtId={district.id}
-                          coordinates={bookmark.coordinates}
-                          alias={bookmark.alias}
-                          editing={isEditingBookmarks}
-                          onSelect={() => {
-                            selectDistrict(district.id);
-                            setIsMobileSearchOpen(false);
-                          }}
-                          onAliasChange={changeBookmarkAlias}
-                          onRemove={removeBookmark}
-                        />
-                      </li>
-                    ))}
-                  </ul>
+                  <DistrictWeatherCardList
+                    bookmarks={bookmarkDistricts}
+                    editing={isEditingBookmarks}
+                    activeDistrictId={selectedLocation.type === 'district' ? selectedLocation.districtId : undefined}
+                    onCurrentSelect={selectCurrentLocation}
+                    onDistrictSelect={selectDistrict}
+                    onAliasChange={changeBookmarkAlias}
+                    onRemove={removeBookmark}
+                    onAfterSelect={() => setIsMobileSearchOpen(false)}
+                  />
                   {isEditingBookmarks && (
                     <p className="p-4 text-center text-sm text-white/70">즐겨찾기는 최대 6개까지 추가할 수 있습니다.</p>
                   )}
