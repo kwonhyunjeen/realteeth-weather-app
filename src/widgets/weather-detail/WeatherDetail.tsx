@@ -1,0 +1,68 @@
+import { useQuery } from '@tanstack/react-query';
+import { useId } from 'react';
+
+import { type LocationCoordinates, reverseGeocodeQueryOptions } from '@/entities/location';
+import { weatherSummaryQueryOptions } from '@/entities/weather';
+import { formatTemperature } from '@/features/weather';
+import { getUnknownErrorMessage } from '@/shared/lib/error';
+
+export type WeatherDetailProps = {
+  coordinates: LocationCoordinates | (() => Promise<LocationCoordinates>);
+  fallbackLocationName: string;
+};
+
+export const WeatherDetail = ({ coordinates, fallbackLocationName }: WeatherDetailProps) => {
+  const componentId = useId();
+
+  const coordinatesQuery = useQuery({
+    queryKey: [componentId, 'coordinates'],
+    queryFn: async () => (typeof coordinates === 'function' ? await coordinates() : coordinates),
+  });
+
+  const weatherQuery = useQuery({
+    ...weatherSummaryQueryOptions(coordinatesQuery.data ?? { lat: 0, lon: 0 }),
+    enabled: Boolean(coordinatesQuery.data),
+  });
+
+  const locationQuery = useQuery({
+    ...reverseGeocodeQueryOptions(coordinatesQuery.data ?? { lat: 0, lon: 0 }),
+    enabled: Boolean(coordinatesQuery.data),
+  });
+
+  const locationName =
+    locationQuery.data?.at(0)?.local_names?.ko ?? locationQuery.data?.at(0)?.name ?? fallbackLocationName;
+  const today = weatherQuery.data?.daily.at(0);
+  const description = weatherQuery.data?.current.weather.at(0)?.description;
+  const coordinatesErrorMessage = getUnknownErrorMessage(coordinatesQuery.error) ?? '위치 정보를 불러오지 못했습니다.';
+
+  return (
+    <section className="rounded-2xl border border-slate-200 bg-white p-6">
+      <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="text-sm font-medium text-slate-500">날씨</p>
+          <h1 className="mt-2 text-2xl font-semibold tracking-tight">{locationName}</h1>
+        </div>
+
+        {coordinatesQuery.isPending && <p className="text-sm text-slate-500">현재 위치를 확인하는 중입니다.</p>}
+        {coordinatesQuery.isError && <p className="text-sm text-slate-500">{coordinatesErrorMessage}</p>}
+        {coordinatesQuery.data && weatherQuery.isPending && (
+          <p className="text-sm text-slate-500">날씨 정보를 불러오는 중입니다.</p>
+        )}
+        {coordinatesQuery.data && weatherQuery.isError && (
+          <p className="text-sm text-slate-500">날씨 정보를 불러오지 못했습니다.</p>
+        )}
+        {coordinatesQuery.data && weatherQuery.data && (
+          <div className="text-left md:text-right">
+            <p className="text-5xl font-semibold tracking-tight">{formatTemperature(weatherQuery.data.current.temp)}</p>
+            {description && <p className="mt-2 text-sm text-slate-500">{description}</p>}
+            {today && (
+              <p className="mt-3 text-sm text-slate-600">
+                최고 {formatTemperature(today.temp.max)} / 최저 {formatTemperature(today.temp.min)}
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
